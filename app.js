@@ -79,7 +79,7 @@ for (var i = 0; i < teams.length; i++) {
 			if (group.DistanceFromStart != -1) {
 				html += '</div>';
 				var speed = $(group.HTML).find('.speed').text();
-			    if(index >= 0) {html += '<div class="info">'+group.DistanceToFinish+'km ' + speed +'km/h</div><div>&nbsp;</div>'}
+				html += '<div class="info">&nbsp;'+group.DistanceToFinish+'km ' + speed +'km/h</div><div>&nbsp;</div>';
 			    html += '<div class="row group">';
 			    $(group.HTML).find('tr').each(function () {
 			      var bib = $(this).find('.bib').text();
