@@ -33,8 +33,14 @@ var style = document.createElement('style');
 style.innerHTML = '.group {border-bottom: 2px solid #ba4a19; margin-bottom: 3px; font-size: 11px; color: #333} .gc div { background-color: #ff0; border: 1px solid #ffb700; } .green div { background-color: #45AE51; color: #fff}  .mylist div { background-color: '+ mycolor +'; color: #fff}  .slow div {color: #fff; background-color: #000} .team {color:#fff; background-color: #ba4a19; } #q-app {padding: 10px} #pause {font-size: 48px;} .group div div { padding-left: 2px; padding-right: 2px;} #toolbar { display: flex; background: #fee5d9; padding: 10px; border-bottom: 2px solid #ba4a19; align-items: center } #toolbar > img { width: 72px; } #jerseyWrapper { display: flex;margin: auto; align-items: center; } .row { justify-content: center; } .selected { background: #ffa47b; } .fas { color: #ba4a19; } .row>.col-md-2 { padding: 2px 5px } .teamJersey:hover { background: #ffa47b; } #toolbar .distance { padding-left: 10px; font-size: 24px } #jerseyWrapper a {width: 3.9%} #jerseyWrapper img {max-width:100%}';
 document.head.appendChild(style);
 
+var link = document.createElement('link');
+link.rel = 'stylesheet';
+link.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css';
+document.head.appendChild(link);
+
+//https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css
 // html
-document.getElementsByClassName("container")[0].innerHTML = '<div id="toolbar"><a href="#" id="pause"><i id="pause-icon" class="fas fa-pause-circle"></i></a><span class="distance"><span id="distance">...</span> km</span><div id="jerseyWrapper"></div></div><div id="rows">&nbsp; waiting for data...</div>';
+document.getElementsByClassName("container")[0].innerHTML = '<div id="toolbar"><a href="#" id="pause"><i id="pause-icon" class="fas fa-pause-circle">pause</i></a><span class="distance"><span id="distance">...</span> km</span><div id="jerseyWrapper"></div></div><div id="rows">&nbsp; waiting for data...</div>';
 
 // team jerseys
 /*
@@ -54,30 +60,34 @@ for (var i = 0; i < teams.length; i++) {
 
 
 // tracking
+	liveHub.off("UpdateTracking");
         liveHub.on("UpdateTracking", function (n, t, i) {
             var r, f, e, h;
-            if (((n = unCompressString(n)), (t = unCompressString(t)), (i = unCompressString(i)), gtag("event", "UpdateTracking", { event_category: "Livetiming" }), $("#pathProfile"))) {
+            if (((n = unCompressString(n)), (t = unCompressString(t)), (i = unCompressString(i)))) {
                 r = 0;
                 f = JSON.parse(i);
-                console.log(i)
+                console.log(f);
 
-                f.length > 0 && ((e = f[0]), (r = 1120 * (e.DistanceFromStart / (e.DistanceFromStart + e.DistanceToFinish))));
+
                 var html = '<div class="row group">';
 
-                f.forEach(function (n) {
-                    var t, i;
-                    if (n.DistanceFromStart != -1) {
+                for (var index = 0; index < f.length; index++) {
+		    group = f[index];
+                    if (group.DistanceFromStart != -1) {
                       html += '</div><div class="row group">';
-			    
-//                      html += '<div class="col-md-2 ' + extra_class + '"><div>' + peloton[rider.Bib].lastnameshort + ' ' + peloton[rider.Bib].firstname + ' ' + prety_time(gap) + '</div></div>';
-                      html += '<div class="col-md-2 gc"><div>Test 1</div></div>';
-                      html += '<div class="col-md-2"><div>Test 2</div></div>';
+                      html += group.HTML;
+                      $(group.HTML).find('.gtoupsInfos tr').each(function () {
+			      var bib = $(this).find('.bib').text();
+			      var extra_class = "";
+			      var name = $(this).find('.name').text()
+                              html += '<div class="col-md-2 ' + extra_class + '"><div>' + name + '</div></div>';
+		      }) 
 			    
 			    
                       document.getElementById("rows").innerHTML = html + '</div>';
 
                     }
-                });
+                };
 
 //            typeof newDataNotified == "function" && newDataNotified(i);
 	    }
